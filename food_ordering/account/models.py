@@ -60,3 +60,8 @@ class User(AbstractUser):
     def clean(self):
         self.email = self.__class__.objects.normalize_email(self.email)
         self.phone = self.__class__.objects.normalize_phone(self.phone)
+
+    def save(self, *args, **kwargs):
+        if self.password[:9] == '__pass__:':
+            self.password = make_password(self.password[9:])
+        super().save(*args, **kwargs)
