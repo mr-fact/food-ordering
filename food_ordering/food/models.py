@@ -5,6 +5,9 @@ class Category(models.Model):
     title = models.CharField(max_length=255)
     # image = models.ImageField()
 
+    def __str__(self):
+        return f'{self.title}'
+
 
 class Food(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='foods')
@@ -12,6 +15,9 @@ class Food(models.Model):
     description = models.TextField()
     # image = models.ImageField()
     hidden = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Price(models.Model):
@@ -30,3 +36,6 @@ class Price(models.Model):
         (HIDDEN, 'غیر قابل مشاهده'),
     )
     status = models.SmallIntegerField(choices=STATUS, default=ACTIVE)
+
+    def __str__(self):
+        return f'{self.title}'
