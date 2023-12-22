@@ -38,4 +38,5 @@ class PriceSerializer(serializers.ModelSerializer):
             'title',
             'description',
             'price',
+            'status',
         ]
