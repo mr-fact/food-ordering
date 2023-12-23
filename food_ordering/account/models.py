@@ -69,5 +69,19 @@ class User(AbstractUser):
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    REGISTERED = 1
+    ACCEPTED = 2
+    POSTED = 3
+    RECEIVED = 4
+    CANCELED = 5
+    STATUS = (
+        (REGISTERED, 'ثبت شده'),
+        (ACCEPTED, 'تایید شده'),
+        (POSTED, 'ارسال شده'),
+        (RECEIVED, 'دریافت شده'),
+        (CANCELED, 'کنسل شده'),
+    )
+    status = models.SmallIntegerField(default=1)
+    paid = models.BooleanField(default=False)
     # packets
     # TODO save a record of address and user information
