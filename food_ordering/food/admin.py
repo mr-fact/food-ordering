@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from food.models import Food, Price, Category
+from food.models import Food, Price, Category, Packet
 
 
 @admin.register(Category)
@@ -21,3 +21,13 @@ class FoodAdmin(admin.ModelAdmin):
 @admin.register(Price)
 class PriceAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(Packet)
+class PacketAdmin(admin.ModelAdmin):
+    list_display = [
+        'price',
+        'user',
+        'order',
+        'number',
+    ]
