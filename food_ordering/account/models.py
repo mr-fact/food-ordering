@@ -65,3 +65,9 @@ class User(AbstractUser):
         if self.password[:9] == '__pass__:':
             self.password = make_password(self.password[9:])
         super().save(*args, **kwargs)
+
+
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    # packets
+    # TODO save a record of address and user information
