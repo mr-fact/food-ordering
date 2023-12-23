@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from food.models import Food, Price, Category
+from food.models import Food, Price, Category, Packet
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -39,4 +39,17 @@ class PriceSerializer(serializers.ModelSerializer):
             'description',
             'price',
             'status',
+        ]
+
+
+class PacketSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Packet
+        fields = [
+            'id',
+            'price',
+            'user',
+            'order',
+            'number',
         ]
