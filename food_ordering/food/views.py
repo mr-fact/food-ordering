@@ -1,13 +1,14 @@
 from django import shortcuts
 from django.shortcuts import render
-from rest_framework import mixins, status
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import mixins, status, filters
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet, GenericViewSet
 
-from food.models import Price, Packet
-from food.serializers import PriceSerializer, PacketSerializer
+from food.models import Price, Packet, Category
+from food.serializers import PriceSerializer, PacketSerializer, CategorySerializer
 
 
 class PriceViewSet(
@@ -16,12 +17,23 @@ class PriceViewSet(
     GenericViewSet
 ):
     serializer_class = PriceSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, ]
+    filterset_fields = ['food', 'food__category', ]
+    search_fields = ['title', 'food__name', ]
 
     def get_queryset(self):
         if self.action == 'list':
             return Price.objects.filter(food__hidden=False, status__in=[Price.ACTIVE, Price.INACTIVE, ])
         else:
             return Price.objects.filter(food__hidden=False)
+
+
+class CategoryViewSet(
+    mixins.ListModelMixin,
+    GenericViewSet
+):
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
 
 
 class AddDeletePrice(GenericAPIView):
