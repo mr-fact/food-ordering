@@ -67,6 +67,16 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
 
+class OrderManager(models.Manager):
+    def create(self, user):
+        order = Order(
+            user=user
+        )
+        order.save()
+        user.packets.filter(order=None).update(order=order)
+        return order
+
+
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
     REGISTERED = 1
@@ -81,7 +91,12 @@ class Order(models.Model):
         (RECEIVED, 'دریافت شده'),
         (CANCELED, 'کنسل شده'),
     )
-    status = models.SmallIntegerField(default=1)
+    status = models.SmallIntegerField(default=1, choices=STATUS)
     paid = models.BooleanField(default=False)
     # packets
-    # TODO save a record of address and user information
+    # TODO save a record of address and user information and datetime
+
+    objects = OrderManager()
+
+    def __str__(self):
+        return f'{self.user}'
