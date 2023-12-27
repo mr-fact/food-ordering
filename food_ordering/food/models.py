@@ -4,6 +4,9 @@ from account.models import User, Order
 
 
 class Category(models.Model):
+    """
+    Model representing a category of food items.
+    """
     title = models.CharField(max_length=255)
     # image = models.ImageField()
 
@@ -12,6 +15,9 @@ class Category(models.Model):
 
 
 class Food(models.Model):
+    """
+    Model representing a food item.
+    """
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='foods')
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -23,6 +29,9 @@ class Food(models.Model):
 
 
 class Price(models.Model):
+    """
+    Model representing the pricing information for a food item.
+    """
     food = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='prices')
     short_title = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
@@ -44,6 +53,9 @@ class Price(models.Model):
 
 
 class Packet(models.Model):
+    """
+    Model representing a packet, which is a collection of items that a user can order.
+    """
     price = models.ForeignKey(Price, on_delete=models.CASCADE, related_name='packets')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='packets')
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='packets',
@@ -53,6 +65,9 @@ class Packet(models.Model):
 
     @classmethod
     def get_or_create(cls, user, price):
+        """
+        Get or create a packet for the given user and price.
+        """
         try:
             packet = cls.objects.get(price=price, user=user, order=None)
         except Packet.DoesNotExist:
@@ -65,6 +80,9 @@ class Packet(models.Model):
 
     @classmethod
     def plus_1(cls, user, price):
+        """
+        Increase the quantity of items in a packet by 1.
+        """
         packet = cls.get_or_create(user, price)
         packet.number += 1
         packet.save()
@@ -72,6 +90,10 @@ class Packet(models.Model):
 
     @classmethod
     def minus_1(cls, user, price):
+        """
+        Decrease the quantity of items in a packet by 1.
+        If the quantity becomes 0 or less, delete the packet.
+        """
         packet = cls.get_or_create(user, price)
         packet.number -= 1
         packet.save()

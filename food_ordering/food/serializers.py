@@ -1,3 +1,5 @@
+# food/serializers.py
+
 from rest_framework import serializers
 
 from account.models import Order
@@ -5,7 +7,9 @@ from food.models import Food, Price, Category, Packet
 
 
 class CategorySerializer(serializers.ModelSerializer):
-
+    """
+    Serializer for the Category model.
+    """
     class Meta:
         model = Category
         fields = [
@@ -15,6 +19,9 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class FoodSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Food model.
+    """
     category = CategorySerializer()
 
     class Meta:
@@ -28,6 +35,9 @@ class FoodSerializer(serializers.ModelSerializer):
 
 
 class PriceSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Price model.
+    """
     food = FoodSerializer()
 
     class Meta:
@@ -44,6 +54,9 @@ class PriceSerializer(serializers.ModelSerializer):
 
 
 class PacketSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Packet model.
+    """
     price = PriceSerializer(read_only=True)
 
     class Meta:
@@ -58,6 +71,9 @@ class PacketSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Order model.
+    """
     packets = PacketSerializer(many=True, read_only=True)
 
     class Meta:
@@ -70,4 +86,7 @@ class OrderSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
+        """
+        Custom create method to handle Order creation with the user from the request context.
+        """
         return Order.objects.create(self.context.get('request').user)

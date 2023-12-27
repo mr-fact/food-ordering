@@ -1,3 +1,5 @@
+# account/models.py
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser
@@ -10,7 +12,10 @@ class UserManager(BaseUserManager):
 
     @classmethod
     def normalize_phone(cls, phone):
-        # TODO
+        """
+        Normalize the phone number.
+        TODO: Implement phone normalization logic if needed
+        """
         return phone
 
     def _create_user(self, phone, email, password, **extra_fields):
@@ -28,11 +33,17 @@ class UserManager(BaseUserManager):
         return user
 
     def create_user(self, phone, email=None, password=None, **extra_fields):
+        """
+        Create and save a regular user with the given phone, email, and password.
+        """
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
         return self._create_user(phone, email, password, **extra_fields)
 
     def create_superuser(self, phone, email=None, password=None, **extra_fields):
+        """
+        Create and save a superuser with the given phone, email, and password.
+        """
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 
@@ -58,10 +69,18 @@ class User(AbstractUser):
     objects = UserManager()
 
     def clean(self):
+        """
+        Normalize email and phone before saving.
+        """
         self.email = self.__class__.objects.normalize_email(self.email)
         self.phone = self.__class__.objects.normalize_phone(self.phone)
 
     def save(self, *args, **kwargs):
+        """
+        If the password does not start with '__pass__:', it means it's already hashed,
+        so we don't need to rehash it.
+        This happens in the admin panel or other ways.
+        """
         if self.password[:9] == '__pass__:':
             self.password = make_password(self.password[9:])
         super().save(*args, **kwargs)
@@ -69,6 +88,9 @@ class User(AbstractUser):
 
 class OrderManager(models.Manager):
     def create(self, user):
+        """
+        Create an order, update related packets, and return the order.
+        """
         order = Order(
             user=user
         )
