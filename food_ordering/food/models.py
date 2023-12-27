@@ -40,7 +40,7 @@ class Price(models.Model):
     status = models.SmallIntegerField(choices=STATUS, default=ACTIVE)
 
     def __str__(self):
-        return f'{self.title}'
+        return f'{self.food.name}({self.title})'
 
 
 class Packet(models.Model):
