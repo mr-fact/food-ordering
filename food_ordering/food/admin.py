@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from account.models import Order
 from food.models import Food, Price, Category, Packet
 
 
@@ -31,3 +32,28 @@ class PacketAdmin(admin.ModelAdmin):
         'order',
         'number',
     ]
+
+
+class PacketInline(admin.TabularInline):
+    model = Packet
+    fields = [
+        'price',
+        'number',
+    ]
+
+    def has_add_permission(self, request, obj):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = [
+        'user',
+    ]
+    inlines = [PacketInline, ]
