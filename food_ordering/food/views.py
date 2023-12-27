@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet, GenericViewSet
 
 from food.models import Price, Packet, Category
-from food.serializers import PriceSerializer, PacketSerializer, CategorySerializer
+from food.serializers import PriceSerializer, PacketSerializer, CategorySerializer, OrderSerializer
 
 
 class PriceViewSet(
@@ -52,3 +52,15 @@ class AddDeletePrice(GenericAPIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         serializer = PacketSerializer(packet)
         return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+
+class OrderViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet
+):
+    permission_classes = [IsAuthenticated,]
+    serializer_class = OrderSerializer
+
+    def get_queryset(self):
+        return self.request.user.orders

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from account.models import Order
 from food.models import Food, Price, Category, Packet
 
 
@@ -43,6 +44,7 @@ class PriceSerializer(serializers.ModelSerializer):
 
 
 class PacketSerializer(serializers.ModelSerializer):
+    price = PriceSerializer(read_only=True)
 
     class Meta:
         model = Packet
@@ -53,3 +55,19 @@ class PacketSerializer(serializers.ModelSerializer):
             'order',
             'number',
         ]
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    packets = PacketSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Order
+        fields = [
+            'id',
+            'status',
+            'paid',
+            'packets',
+        ]
+
+    def create(self, validated_data):
+        return Order.objects.create(self.context.get('request').user)
