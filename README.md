@@ -1,4 +1,6 @@
 # food-ordering
+![image](https://github.com/mr-fact/food-ordering/assets/110711776/020f39ec-120c-4b27-bd08-fca36e87d97a)
+[figma design](https://www.figma.com/file/H8azhQ3Xxcik32T3jbJI6h/Food-Ordering-%26-Delivery-Mobile-App---Case-Study---persian-(Community)?type=design&node-id=0%3A1&mode=design&t=CY3OgG1kpoOqsUp3-1)
 
 Welcome to the Food Ordering Project! This project is designed to facilitate food ordering and management, consisting of two main apps: `food` and `account`.
 
