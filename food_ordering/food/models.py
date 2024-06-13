@@ -101,3 +101,18 @@ class Packet(models.Model):
             packet.delete()
             return None
         return packet
+
+
+class Rating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
+    price = models.ForeignKey(Price, on_delete=models.CASCADE, related_name='ratings')
+    created_at = models.DateTimeField(auto_now_add=True)
+    GRADE_CHOICES = (
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5),
+    )
+    grade = models.PositiveSmallIntegerField(choices=GRADE_CHOICES)
+    comment = models.TextField(default='', blank=True)  # descriptions
