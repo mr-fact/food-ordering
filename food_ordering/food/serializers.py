@@ -2,8 +2,8 @@
 
 from rest_framework import serializers
 
-from account.models import Order
-from food.models import Food, Price, Category, Packet
+from account.models import Order, User
+from food.models import Food, Price, Category, Packet, Rating
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -90,3 +90,43 @@ class OrderSerializer(serializers.ModelSerializer):
         Custom create method to handle Order creation with the user from the request context.
         """
         return Order.objects.create(self.context.get('request').user)
+
+
+class InnerUserSerializer(serializers.CharField):
+    def to_representation(self, phone):
+        return f'{phone[:4]}****{phone[-3:]}'
+
+
+class RatingSerializer(serializers.ModelSerializer):
+    user = InnerUserSerializer(read_only=True, source='user.phone')
+    # price = PriceSerializer(read_only=True)
+
+    class Meta:
+        model = Rating
+        # depth = 1
+        fields = [
+            'user',
+            'price',
+            'created_at',
+            'grade',
+            'comment',
+        ]
+        extra_kwargs = {
+            'created_at': {'read_only': True, },
+            'comment': {'required': True, },
+        }
+
+    def create(self, validated_data):
+        # user = self.context.get('request').user
+        user = User.objects.get(id=1)
+        price = validated_data['price']
+        grade = validated_data['grade']
+        comment = validated_data['comment']
+        try:
+            instance = Rating.objects.get(user=user, price=price)
+            instance.grade = grade
+            instance.comment = comment
+        except Rating.DoesNotExist:
+            instance = Rating(user=user, price=price, grade=grade, comment=comment)
+        instance.save()
+        return instance
