@@ -3,7 +3,7 @@
 from django.contrib import admin
 
 from account.models import Order
-from food.models import Food, Price, Category, Packet
+from food.models import Food, Price, Category, Packet, Rating
 
 
 @admin.register(Category)
@@ -80,3 +80,11 @@ class OrderAdmin(admin.ModelAdmin):
         'user',
     ]
     inlines = [PacketInline, ]
+
+
+@admin.register(Rating)
+class RatingAdmin(admin.ModelAdmin):
+    """
+    Admin configuration for the Rating model.
+    """
+    pass
